@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resources/css/style.css">
+    <title>Sign in & Sign up</title>
+</head>
+<body>
+    <section>
+        <div class="container">
+            <div class="user signinBx">
+
+                <div class="imgBx">
+                    <img src="resources/image/keys.jpg">
+                </div>
+
+                <div class="formBx">
+                    <form action="">
+                        <h2>로그인</h2>
+                        <input type="text" placeholder="Username">
+                        <input type="password" placeholder="PassWord">
+                        <input type="submit" value="Login">
+                        <p class="signup"> 아이디가 없으신가요? <a href="#" onclick="toggleForm();">회원가입</a></p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="user signupBx">
+                <div class="formBx">
+                    <form action="">
+                        <h2>회원가입</h2>
+                        <input type="text" placeholder="Username">
+                        <input type="text" placeholder="Email Address">
+                        <input type="password" placeholder="Create Password">
+                        <input type="password" placeholder="Confirm Password">
+                        <input type="submit" value="Sign up">
+                        <p class="signup"> 아이디가 있으신가요? <a href="#" onclick="toggleForm();">로그인</a></p>
+                    </form>
+                </div>
+                <div class="imgBx">
+                    <img src="resources/image/text.jpg">
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleForm(){
+                container = document.querySelector('.container');
+                section = document.querySelector('section');
+
+                container.classList.toggle('active');
+                section.classList.toggle('active');
+            }
+
+        </script>
+    </section>
+</body>
+</html>
