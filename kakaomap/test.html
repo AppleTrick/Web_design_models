@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+      <div id="where">
+
+      </div>
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          // GPS를 지원하면
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              alert(position.coords.latitude + " " + position.coords.longitude);
+              document.getElementById('where').textContent= position.coords.latitude + " " + position.coords.longitude
+            },
+            function (error) {
+              console.error(error);
+            },
+            {
+              enableHighAccuracy: false,
+              maximumAge: 0,
+              timeout: Infinity,
+            }
+          );
+        } else {
+          alert("GPS를 지원하지 않습니다");
+        }
+      }
+      getLocation();
+    </script>
+  </body>
+</html>
