@@ -1,3 +1,5 @@
+
+// 동물 병원 API 가지고 오기
 var requestURL = "https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&type=json&pSize=1000";
 var request = new XMLHttpRequest();
 request.open('GET',requestURL);

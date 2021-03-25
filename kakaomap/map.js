@@ -1,9 +1,20 @@
+// 동물병원
 var requestURL =
   "https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&type=json&pSize=1000";
 var request = new XMLHttpRequest();
 request.open("GET", requestURL);
 request.responseType = "json";
 request.send();
+
+// 동물 보호소
+var requestURL1 =
+  "https://openapi.gg.go.kr/OrganicAnimalProtectionFacilit?KEY=54a920236f3d4cd4bf0024b36c258e3c&type=json&pSize=1000";
+var request1 = new XMLHttpRequest();
+request1.open("GET", requestURL1);
+request1.responseType = "json";
+request1.send();
+
+//fetch 하는법
 
 // 마커를 표시할 위치와 title 객체 배열입니다
 var positions = [
@@ -22,22 +33,32 @@ request.onload = function () {
   var responseMap = request.response;
   // var mapsvalue = JSON.stringify(responseMap,null,2);
   // console.log(mapsvalue);
-
   var maps = responseMap;
   // console.log(maps.Animalhosptl[1].row[1].REFINE_WGS84_LAT);
   // console.log(maps.Animalhosptl[1].row[1].REFINE_WGS84_LOGT);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-  for(var i = 0; i < maps.Animalhosptl[1].row.length; i++){
+
+  for (var i = 0; i < maps.Animalhosptl[1].row.length; i++) {
     var vals = {
-        title: maps.Animalhosptl[1].row[i].BIZPLC_NM,
-        latlng: new kakao.maps.LatLng(
-          maps.Animalhosptl[1].row[i].REFINE_WGS84_LAT,
-          maps.Animalhosptl[1].row[i].REFINE_WGS84_LOGT
-        ),
-      };
+      title: maps.Animalhosptl[1].row[i].BIZPLC_NM,
+      latlng: new kakao.maps.LatLng(
+        maps.Animalhosptl[1].row[i].REFINE_WGS84_LAT,
+        maps.Animalhosptl[1].row[i].REFINE_WGS84_LOGT
+      ),
+    };
 
     positions.push(vals);
   }
+
+  const array = maps.Animalhosptl[1].row;
+
+  const resultArr = array.map((x, idx) => {
+    return {
+      title: x.BIZPLC_NM,
+      lating: new kakao.maps.LatLng(x.REFINE_WGS84_LAT, x.REFINE_WGS84_LOGT),
+    };
+  });
+
+  position = [...positions, ...resultArr];
 
   makeMaps();
 };
