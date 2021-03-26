@@ -1,28 +1,31 @@
 var disease;
 // *********************************************************
-function getData() {
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", "json/AnimalDiseases.json");
-  xhr.send();
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      return JSON.parse(xhr.response);
-    } else {
-      console.error("Error", xhr.status, xhr.statusText);
-    }
-  };
-}
-// *********************************************************
-function start(){
-  disease = getData();
-  console.log(disease);
-
-  document.getElementById("search-input").addEventListener("keyup", function () {
-    var value = this.value;
-    console.log("Value:", value);
-    var data = searchTable(value, disease);
-    buildTable(data);
+const promiseGet = (url) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.send();
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        resolve(JSON.parse(xhr.response));
+      } else {
+        reject(new Error(xhr.status));
+      }
+    };
   });
+};
+// *********************************************************
+async function start() {
+  await promiseGet("json/AnimalDiseases.json").then((res) => (disease = res));
+
+  document
+    .getElementById("search-input")
+    .addEventListener("keyup", function () {
+      var value = this.value;
+      console.log("Value:", value);
+      var data = searchTable(value, disease);
+      buildTable(data);
+    });
 
   buildTable(disease);
 }
@@ -30,12 +33,11 @@ function start(){
 function searchTable(value, disease) {
   var filteredData = [];
 
-  for (var i = 0; i < disease.length; i++) { 
+  for (var i = 0; i < disease.length; i++) {
     value = value.toLowerCase();
-    var name = disease[i].name.toLowerCase();
+    var name = disease[i].질병명.toLowerCase();
 
     if (name.includes(value)) {
-      console.log("작동");
       filteredData.push(disease[i]);
     }
   }
