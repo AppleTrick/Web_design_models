@@ -1,115 +1,185 @@
-// 동물병원
-var requestURL =
-  "https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&type=json&pSize=1000";
-var request = new XMLHttpRequest();
-request.open("GET", requestURL);
-request.responseType = "json";
-request.send();
-
-// 동물 보호소
-var requestURL1 =
-  "https://openapi.gg.go.kr/OrganicAnimalProtectionFacilit?KEY=54a920236f3d4cd4bf0024b36c258e3c&type=json&pSize=1000";
-var request1 = new XMLHttpRequest();
-request1.open("GET", requestURL1);
-request1.responseType = "json";
-request1.send();
-
-//fetch 하는법
-
+var Animalhospital1;
+var Animalhospital2;
+var Animalhospital3;
 // 마커를 표시할 위치와 title 객체 배열입니다
-var positions = [
-  {
-    title: "카카오",
-    latlng: new kakao.maps.LatLng(33.450705, 126.570677),
-  },
-];
-
+var positionsHospital = [];
+var positionsProtection = [];
 // 지도에 표시된 마커 객체를 가지고 있을 배열입니다
-var markers = [];
+var markersHospital = [];
+var markersProtection = [];
 
 var map;
 
-request.onload = function () {
-  var responseMap = request.response;
-  // var mapsvalue = JSON.stringify(responseMap,null,2);
-  // console.log(mapsvalue);
-  var maps = responseMap;
-  // console.log(maps.Animalhosptl[1].row[1].REFINE_WGS84_LAT);
-  // console.log(maps.Animalhosptl[1].row[1].REFINE_WGS84_LOGT);
+var Animalhospital1;
+var Animalhospital2;
+var Animalhospital3;
+var AnimalProtection;
 
-  for (var i = 0; i < maps.Animalhosptl[1].row.length; i++) {
-    var vals = {
-      title: maps.Animalhosptl[1].row[i].BIZPLC_NM,
-      latlng: new kakao.maps.LatLng(
-        maps.Animalhosptl[1].row[i].REFINE_WGS84_LAT,
-        maps.Animalhosptl[1].row[i].REFINE_WGS84_LOGT
-      ),
-    };
+//위도
+var latitude1 = 37.39490807240093;
+// 경도
+var longitude1 = 127.11114750062966;
 
-    positions.push(vals);
-  }
 
-  const array = maps.Animalhosptl[1].row;
+// Api 에서 값을 받아 온다.
+async function fetchURL(){
+    Animalhospital1 = await fetch('https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&pIndex=1&pSize=1000&type=json')
+    .then(function(res) {
+      return res.json();
+    });   
 
-  const resultArr = array.map((x, idx) => {
-    return {
-      title: x.BIZPLC_NM,
-      lating: new kakao.maps.LatLng(x.REFINE_WGS84_LAT, x.REFINE_WGS84_LOGT),
-    };
-  });
+    Animalhospital2 = await fetch('https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&pIndex=2&pSize=1000&type=json')
+    .then(function(res){
+      return res.json();
+    });
 
-  position = [...positions, ...resultArr];
+    Animalhospital3 = await fetch('https://openapi.gg.go.kr/Animalhosptl?KEY=00bfb12c126b44e387a7f0ef71a51ee1&pIndex=3&pSize=1000&type=json')
+    .then(function(res){
+      return res.json();
+    });
+    
+    AnimalProtection = await fetch('https://openapi.gg.go.kr/OrganicAnimalProtectionFacilit?KEY=00bfb12c126b44e387a7f0ef71a51ee1&pIndex=1&pSize=1000&type=json')
+    .then(function(res){
+      return res.json();
+    });
+}
 
-  makeMaps();
+
+// 함수 시작
+async function start() {
+  await fetchURL();
+  pushPositions(Animalhospital1);
+  pushPositions(Animalhospital2);
+  pushPositions(Animalhospital3);
+
+  pushPositions1(AnimalProtection);
+  // await getLocation();  
+  await makeMaps();
 };
 
-function makeMaps() {
+// positon 값에 동물 병원 API 값들 넣어주기
+function pushPositions(inputval){
+  for (var i = 0; i < inputval.Animalhosptl[1].row.length; i++) {
+
+    if(inputval.Animalhosptl[1].row[i].BSN_STATE_NM !=="폐업"){
+      var vals = {
+        title: inputval.Animalhosptl[1].row[i].BIZPLC_NM,
+        latlng: new kakao.maps.LatLng(
+          inputval.Animalhosptl[1].row[i].REFINE_WGS84_LAT,
+          inputval.Animalhosptl[1].row[i].REFINE_WGS84_LOGT
+        ),
+      };
+      positionsHospital.push(vals);
+    }
+  }
+}
+
+function pushPositions1(inputval){
+  for (var i = 0; i < inputval.OrganicAnimalProtectionFacilit[1].row.length; i++) {
+
+    var vals = {
+      title: inputval.OrganicAnimalProtectionFacilit[1].row[i].ENTRPS_NM,
+      latlng: new kakao.maps.LatLng(
+        inputval.OrganicAnimalProtectionFacilit[1].row[i].REFINE_WGS84_LAT,
+        inputval.OrganicAnimalProtectionFacilit[1].row[i].REFINE_WGS84_LOGT
+      ),
+    };
+    positionsProtection.push(vals);
+
+  }
+}
+
+
+async function makeMaps() {
   var mapContainer = document.getElementById("map"), // 지도를 표시할 div
     mapOption = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+      center: new kakao.maps.LatLng(latitude1, longitude1), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
 
   map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
   // 마커 이미지의 이미지 주소입니다
-  var imageSrc =
-    "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+  var imageSrc = "https://www.flaticon.com/svg/vstatic/svg/829/829229.svg?token=exp=1616643003~hmac=4cb2b13a040245ec23ac538afc4e0bd7";
   // 마커 이미지의 이미지 크기 입니다
-  var imageSize = new kakao.maps.Size(24, 35);
+  var imageSize = new kakao.maps.Size(32, 32);
 
+  // 마커 이미지의 이미지 주소입니다
+  var imageSrc1 = "https://www.flaticon.com/svg/vstatic/svg/2716/2716271.svg?token=exp=1616643183~hmac=1afca814a5319ac649c7522bc15ec87a";
+
+
+  // 병원
   // 마커를 생성하고 지도위에 표시하는 함수입니다
-  for (var i = 0; i < positions.length; i++) {
+  for (var i = 0; i < positionsHospital.length; i++) {
     // 마커 이미지를 생성합니다
     var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
     // 마커를 생성합니다
     var marker = new kakao.maps.Marker({
       map: map, // 마커를 표시할 지도
-      position: positions[i].latlng, // 마커를 표시할 위치
-      title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+      position: positionsHospital[i].latlng, // 마커를 표시할 위치
+      title: positionsHospital[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
       image: markerImage, // 마커 이미지
     });
 
     // 마커가 지도 위에 표시되도록 설정합니다
     marker.setMap(map);
-    markers.push(marker);
+    markersHospital.push(marker);
+  }
+
+  // 보호소
+  for (var i = 0; i < positionsProtection.length; i++) {
+    // 마커 이미지를 생성합니다
+    var markerImage = new kakao.maps.MarkerImage(imageSrc1, imageSize);
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+      map: map, // 마커를 표시할 지도
+      position: positionsProtection[i].latlng, // 마커를 표시할 위치
+      title: positionsProtection[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+      image: markerImage, // 마커 이미지
+    });
+
+    // 마커가 지도 위에 표시되도록 설정합니다
+    marker.setMap(map);
+    markersProtection.push(marker);
   }
 }
 
-// 배열에 추가된 마커들을 지도에 표시하거나 삭제하는 함수입니다
-function setMarkers(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
-}
+// // 배열에 추가된 마커들을 지도에 표시하거나 삭제하는 함수입니다
+// function setMarkers(map) {
+//   for (var i = 0; i < markersHospital.length; i++) {
+//     markersHospital[i].setMap(map);
+//   }
+// }
 
 // "마커 보이기" 버튼을 클릭하면 호출되어 배열에 추가된 마커를 지도에 표시하는 함수입니다
 function showMarkers() {
-  setMarkers(map);
+  for (var i = 0; i < markersHospital.length; i++) {
+    markersHospital[i].setMap(map);
+  }
 }
 
 // "마커 감추기" 버튼을 클릭하면 호출되어 배열에 추가된 마커를 지도에서 삭제하는 함수입니다
 function hideMarkers() {
-  setMarkers(null);
+  for (var i = 0; i < markersHospital.length; i++) {
+    markersHospital[i].setMap(null);
+  }
 }
+
+// "마커 보이기" 버튼을 클릭하면 호출되어 배열에 추가된 마커를 지도에 표시하는 함수입니다
+function showMarkers1() {
+  for (var i = 0; i < markersProtection.length; i++) {
+    markersProtection[i].setMap(map);
+  }
+}
+
+// "마커 감추기" 버튼을 클릭하면 호출되어 배열에 추가된 마커를 지도에서 삭제하는 함수입니다
+function hideMarkers1() {
+  for (var i = 0; i < markersProtection.length; i++) {
+    markersProtection[i].setMap(null);
+  }
+}
+
+
+start();
