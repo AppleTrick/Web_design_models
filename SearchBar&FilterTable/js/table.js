@@ -18,6 +18,8 @@ const promiseGet = (url) => {
 async function start() {
   await promiseGet("json/AnimalDiseases.json").then((res) => (disease = res));
 
+  console.log(disease);
+
   document
     .getElementById("search-input")
     .addEventListener("keyup", function () {
