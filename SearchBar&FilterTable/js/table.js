@@ -49,7 +49,7 @@ function buildTable(disease) {
 
   table.innerHTML = "";
 
-  for (var i = 0; i < disease.length; i++) {
+  for (var i = 0; i < 20; i++) {
     var row = `<tr>
                         <td>${disease[i].축종}</td>
                         <td>${disease[i].질병명}</td>
