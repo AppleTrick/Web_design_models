@@ -9,35 +9,35 @@
 </head>
 <body>
     <div class="img-slider">
-        <div class="slide active">
+        <div class="slide1 active">
             <img src="cat1.jpg" alt="" class="mainImage">
             <div class="info">
                 <h2>Slide 01</h2>
                 <p>In this video, You will learn how to design a Responsive Image Slider(Slideshow / Carousel) with Manual Navigation Buttons and Auto-Play Navigation functionalities only using pure javascript. In this Image Slider, you can add more images you want without changing any CSS styles because </p>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide1">
             <img src="cat2.jpg" alt="" class="mainImage">
             <div class="info">
                 <h2>Slide 02</h2>
                 <p>In this video, You will learn how to design a Responsive Image Slider(Slideshow / Carousel) with Manual Navigation Buttons and Auto-Play Navigation functionalities only using pure javascript. In this Image Slider, you can add more images you want without changing any CSS styles because </p>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide1">
             <img src="dog1.jpg" alt="" class="mainImage">
             <div class="info">
                 <h2>Slide 03</h2>
                 <p>In this video, You will learn how to design a Responsive Image Slider(Slideshow / Carousel) with Manual Navigation Buttons and Auto-Play Navigation functionalities only using pure javascript. In this Image Slider, you can add more images you want without changing any CSS styles because </p>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide1">
             <img src="dog3.jpg" alt="" class="mainImage">
             <div class="info">
                 <h2>Slide 04</h2>
                 <p>In this video, You will learn how to design a Responsive Image Slider(Slideshow / Carousel) with Manual Navigation Buttons and Auto-Play Navigation functionalities only using pure javascript. In this Image Slider, you can add more images you want without changing any CSS styles because </p>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide1">
             <img src="dog4.jpg" alt="" class="mainImage">
             <div class="info">
                 <h2>Slide 05</h2>
@@ -54,13 +54,13 @@
     </div>
 
     <script type="text/javascript">
-    var slides = document.querySelectorAll('.slide');
+    var slides = document.querySelectorAll('.slide1');
     var btns = document.querySelectorAll('.btn');
     let currentSlide = 1;
 
     var manualNav = function(manual){
-       slides.forEach((slide) => {
-           slide.classList.remove('active');
+       slides.forEach((slide1) => {
+           slide1.classList.remove('active');
            btns.forEach((btn) =>{
                btn.classList.remove('active');
            });
